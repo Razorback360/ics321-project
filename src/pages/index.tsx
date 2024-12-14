@@ -5,6 +5,7 @@ const Home: FC = () => {
   return (
     <div>
       <p>Hai</p>
+       <p>First nextjs line of shit </p>
     </div>
   );
 };
