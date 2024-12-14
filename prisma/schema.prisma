@@ -1,0 +1,151 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model
+model User {
+  id           Int            @id @default(autoincrement())
+  name         String
+  email        String         @unique
+  passwordHash String
+  staff        Staff?
+  loyaltyMiles LoyaltyMiles[]
+  passengers   Passenger[]
+}
+
+// Staff model
+model Staff {
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
+}
+
+// LoyaltyMiles model
+model LoyaltyMiles {
+  id              Int    @id @default(autoincrement())
+  name            String
+  discountPercent Float
+  requiredMiles   Int
+  userId          Int
+  user            User   @relation(fields: [userId], references: [id])
+}
+
+// Passenger model
+model Passenger {
+  id                  Int                   @id @default(autoincrement())
+  userId              Int
+  user                User                  @relation(fields: [userId], references: [id])
+  passengerDependents PassengerDependence[]
+  attachments         PassengerAttachment[]
+  bookings            Booking[]
+  waitingLists        WaitingList[]
+}
+
+// PassengerAttachment model
+model PassengerAttachment {
+  id           Int       @id @default(autoincrement())
+  passengerId  Int
+  documentPath String
+  passenger    Passenger @relation(fields: [passengerId], references: [id])
+}
+
+// PassengerDependence model
+model PassengerDependence {
+  id          Int       @id @default(autoincrement())
+  name        String
+  age         Int
+  passengerId Int
+  passenger   Passenger @relation(fields: [passengerId], references: [id])
+}
+
+// Booking model
+model Booking {
+  id            Int       @id @default(autoincrement())
+  date          DateTime
+  fromStationId Int
+  toStationId   Int
+  ticketId      Int
+  percentage    Float
+  seatingId     Int
+  passengerId   Int
+  passenger     Passenger @relation(fields: [passengerId], references: [id])
+  luggages      Luggage[]
+  tickets       Ticket[]
+}
+
+// Luggage model
+model Luggage {
+  id        Int     @id @default(autoincrement())
+  weight    Float
+  bookingId Int
+  booking   Booking @relation(fields: [bookingId], references: [id])
+}
+
+// Ticket model
+model Ticket {
+  id       Int       @id @default(autoincrement())
+  price    Float
+  tier     String
+  bookings Booking[]
+}
+
+// WaitingList model
+model WaitingList {
+  id          Int       @id @default(autoincrement())
+  trainId     Int
+  passengerId Int
+  passenger   Passenger @relation(fields: [passengerId], references: [id])
+  train       Train     @relation(fields: [trainId], references: [id])
+}
+
+// Train model
+model Train {
+  id          Int             @id @default(autoincrement())
+  nameEn      String
+  nameAr      String
+  seats       Seating[]
+  waitingList WaitingList[]
+  schedules   TrainSchedule[]
+}
+
+// Seating model
+model Seating {
+  id      Int   @id @default(autoincrement())
+  trainId Int
+  number  Int
+  train   Train @relation(fields: [trainId], references: [id])
+}
+
+// TrainSchedule model
+model TrainSchedule {
+  id             Int      @id @default(autoincrement())
+  trainId        Int
+  fromStationId  Int
+  toStationId    Int
+  departTime     DateTime
+  arrivalTime    DateTime
+  sequenceNumber Int
+  train          Train    @relation(fields: [trainId], references: [id])
+  fromStation    Station  @relation("FromStation", fields: [fromStationId], references: [id])
+  toStation      Station  @relation("ToStation", fields: [toStationId], references: [id])
+}
+
+// Station model
+model Station {
+  id            Int             @id @default(autoincrement())
+  name          String
+  location      String
+  passedTrain   TrainSchedule[] @relation("FromStation")
+  arrivingTrain TrainSchedule[] @relation("ToStation")
+}
