@@ -50,6 +50,7 @@ model Passenger {
   attachments         PassengerAttachment[]
   bookings            Booking[]
   waitingLists        WaitingList[]
+  seatings            Seating[]
 }
 
 // PassengerAttachment model
@@ -121,10 +122,12 @@ model Train {
 
 // Seating model
 model Seating {
-  id      Int   @id @default(autoincrement())
-  trainId Int
-  number  Int
-  train   Train @relation(fields: [trainId], references: [id])
+  id          Int        @id @default(autoincrement())
+  trainId     Int
+  number      Int
+  train       Train      @relation(fields: [trainId], references: [id])
+  passengerId Int?       // Optional passengerId field
+  passenger   Passenger? @relation(fields: [passengerId], references: [id])
 }
 
 // TrainSchedule model
