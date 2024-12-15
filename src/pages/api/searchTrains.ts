@@ -20,7 +20,13 @@ export default async function handler(
         ]
       },
       include:{
-        seats: true
+        seats: true,
+        schedules: {
+          include: {
+            fromStation: true,
+            toStation: true
+          }
+        }
       }
     });
 

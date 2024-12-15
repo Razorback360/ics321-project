@@ -9,7 +9,7 @@ export default async function handler(
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const { passengerId, trainId, seatingId } = req.body;
+  const { passengerId, trainId, seatingId, scheduleId } = req.body;
 
   if (!passengerId || !trainId || !seatingId) {
     return res.status(400).json({ message: 'Missing required fields' });
@@ -18,7 +18,7 @@ export default async function handler(
   try {
     // Fetch the train schedule for the selected train
     const trainSchedule = await prisma.trainSchedule.findFirst({
-      where: { trainId },
+      where: { id: scheduleId },
       orderBy: { departTime: 'asc' } // Assuming you want the earliest schedule
     });
 
@@ -31,11 +31,11 @@ export default async function handler(
     const booking = await prisma.booking.create({
       data: {
         passengerId,
-        trainId,
         fromStationId,
         toStationId,
         date,
         seatingId,
+        percentage: 0,
       },
     });
 
