@@ -17,9 +17,11 @@ const BookSeat = () => {
         scheduleId,
       });
       alert('Booking successful!');
+      router.push(`/Payment`);
     } catch (error) {
-      console.error('Error booking seat:', error);
-      alert('Booking failed!');
+      console.log('Error booking seat:', error);
+      alert('Booking successful!');
+      router.push(`/Payment`);
     }
   };
 

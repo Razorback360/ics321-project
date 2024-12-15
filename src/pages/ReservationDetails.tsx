@@ -39,20 +39,10 @@ const ReservationDetails = () => {
         <ul className="list-disc list-inside">
           {reservationDetails.reservationDetails.bookings.map((booking) => (
             <li key={booking.id}>
-              From Station ID: {booking.fromStationId}, To Station ID: {booking.toStationId}, 
-              Date: {new Date(booking.date).toLocaleString()}, 
-              Seating ID: {booking.seatingId}, 
+              From Station: {booking.fromStationName},<br/>
+              To Station: {booking.toStationName}, <br/>
+              Date: {new Date(booking.date).toLocaleString()}, <br/>
               Percentage: {booking.percentage}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold">Waiting Lists</h2>
-        <ul className="list-disc list-inside">
-          {reservationDetails.reservationDetails.waitingLists.map((waitingList) => (
-            <li key={waitingList.id}>
-              Train ID: {waitingList.trainId}
             </li>
           ))}
         </ul>
@@ -62,7 +52,7 @@ const ReservationDetails = () => {
         <ul className="list-disc list-inside">
           {reservationDetails.reservationDetails.seatings.map((seating) => (
             <li key={seating.id}>
-              Train ID: {seating.trainId}, Seat Number: {seating.number}
+              Seat Number: {seating.number}
             </li>
           ))}
         </ul>
@@ -72,7 +62,7 @@ const ReservationDetails = () => {
         <ul className="list-disc list-inside">
           {reservationDetails.reservationDetails.passengerDependents.map((dependent) => (
             <li key={dependent.id}>
-              Name: {dependent.name}, Age: {dependent.age}
+              Name: {dependent.name},<br/> Age: {dependent.age}
             </li>
           ))}
         </ul>
