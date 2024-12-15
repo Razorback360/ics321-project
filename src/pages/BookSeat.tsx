@@ -19,27 +19,34 @@ const BookSeat = () => {
       alert('Booking successful!');
     } catch (error) {
       console.error('Error booking seat:', error);
-      alert('Booking failed.');
+      alert('Booking failed!');
     }
   };
 
   return (
-    <div>
-      <h1>Book Seat</h1>
-      <div>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Book Seat</h1>
+      <div className="mb-4">
         <input
           type="text"
           placeholder="Passenger ID"
           value={passengerId}
           onChange={(e) => setPassengerId(e.target.value)}
+          className="border p-2 mb-2 w-full rounded"
         />
         <input
           type="text"
           placeholder="Seating ID"
           value={seatingId}
           onChange={(e) => setSeatingId(e.target.value)}
+          className="border p-2 mb-2 w-full rounded"
         />
-        <button onClick={handleBooking}>Book</button>
+        <button
+          onClick={handleBooking}
+          className="bg-blue-500 text-white p-2 rounded w-full"
+        >
+          Book
+        </button>
       </div>
     </div>
   );

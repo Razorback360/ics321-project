@@ -32,9 +32,6 @@ export default {
           200: "#b3b3b3"
         }
 			},
-      fontFamily: {
-        'sans': ['"Stag Sans"', '"GE Dinar One"']
-      }
 		}
 	},
   plugins: [],
