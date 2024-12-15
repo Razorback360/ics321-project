@@ -10,15 +10,18 @@ export default async function handler(
   }
 
   try {
-    const trainStations = await prisma.trainSchedule.findMany({
+    const trains = await prisma.train.findMany({
       include: {
-        train: true,
-        fromStation: true,
-        toStation: true,
+        schedules: {
+          include: {
+            fromStation: true,
+            toStation: true,
+          },
+        },
       },
     });
 
-    res.status(200).json({ trainStations });
+    res.status(200).json({ trains });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch train stations." });
   }

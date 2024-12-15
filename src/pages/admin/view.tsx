@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-interface Schedule {
+export interface Schedule {
   id: number;
   train: {
     nameEn: string;
