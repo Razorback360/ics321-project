@@ -76,13 +76,11 @@ model Booking {
   date          DateTime
   fromStationId Int
   toStationId   Int
-  ticketId      Int
   percentage    Float
   seatingId     Int
   passengerId   Int
   passenger     Passenger @relation(fields: [passengerId], references: [id])
   luggages      Luggage[]
-  tickets       Ticket[]
 }
 
 // Luggage model
@@ -98,7 +96,6 @@ model Ticket {
   id       Int       @id @default(autoincrement())
   price    Float
   tier     String
-  bookings Booking[]
 }
 
 // WaitingList model
