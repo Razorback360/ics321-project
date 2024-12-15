@@ -11,7 +11,7 @@ export default async function handler(
 
   const { passengerId, trainId, seatingId, scheduleId } = req.body;
 
-  if (!passengerId || !trainId || !seatingId) {
+  if (!passengerId || !trainId || !seatingId || !scheduleId) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
@@ -19,7 +19,7 @@ export default async function handler(
     // Fetch the train schedule for the selected train
     const trainSchedule = await prisma.trainSchedule.findFirst({
       where: { id: scheduleId },
-      orderBy: { departTime: 'asc' } // Assuming you want the earliest schedule
+      orderBy: { departTime: 'asc' },
     });
 
     if (!trainSchedule) {
@@ -28,19 +28,31 @@ export default async function handler(
 
     const { fromStationId, toStationId, departTime: date } = trainSchedule;
 
-    const booking = await prisma.booking.create({
-      data: {
-        passengerId,
-        fromStationId,
-        toStationId,
-        date,
-        seatingId,
-        percentage: 0,
-      },
+    // Create a ticket and booking in a transaction
+    const booking = await prisma.$transaction(async (prisma) => {
+      const ticket = await prisma.ticket.create({
+        data: {
+          price: 100, 
+          tier: 'Economy', 
+        },
+      });
+
+      return await prisma.booking.create({
+        data: {
+          passengerId,
+          fromStationId,
+          toStationId,
+          date,
+          seatingId,
+          ticketId: ticket.id,
+          percentage: 0,
+        },
+      });
     });
 
     res.status(201).json(booking);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Internal server error', error });
   }
 }
