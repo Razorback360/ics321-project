@@ -21,7 +21,11 @@ const index = () => {
             Reservation Details
           </Link>
         </li>
-        {/* TODO - Waitlisted loyalty passengers in each class given a train number (for admins). */}
+        <li>
+          <Link href="/report/Waitlist" className="text-blue-500">
+            Waitlist
+          </Link>
+        </li>
       </ul>
     </div>
   );
