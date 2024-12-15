@@ -16,6 +16,7 @@ export default async function handler(
   }
 
   try {
+    // Fetch passenger details
     const reservationDetails = await prisma.passenger.findUnique({
       where: { id: parseInt(id as string) },
       include: {
@@ -27,23 +28,32 @@ export default async function handler(
         user: true,
       },
     });
-    const fromStation = await prisma.station.findFirst({
-      where: { id: reservationDetails?.bookings[0].fromStationId },
-    });
-    const toStation = await prisma.station.findFirst({
-      where: { id: reservationDetails?.bookings[0].toStationId },
-    });
-
-    reservationDetails.bookings[0].fromStationName = fromStation?.name;
-    reservationDetails.bookings[0].toStationName = toStation?.name;
-
 
     if (!reservationDetails) {
       return res.status(404).json({ error: "Passenger not found." });
     }
 
-    res.status(200).json({ reservationDetails });
+    // Enhance the bookings with station names if bookings exist
+    const enhancedBookings = await Promise.all(
+      reservationDetails.bookings.map(async (booking) => {
+        const fromStation = await prisma.station.findFirst({
+          where: { id: booking.fromStationId },
+        });
+        const toStation = await prisma.station.findFirst({
+          where: { id: booking.toStationId },
+        });
+
+        return {
+          ...booking,
+          fromStationName: fromStation?.name || null,
+          toStationName: toStation?.name || null,
+        };
+      })
+    );
+
+    res.status(200).json({ ...reservationDetails, bookings: enhancedBookings });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Failed to fetch reservation details." });
   }
 }
