@@ -9,7 +9,7 @@ export default async function handler(
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { passengerId: id } = req.query;
+  const { id } = req.query;
 
   if (!id) {
     return res.status(400).json({ error: "Passenger ID is required." });
@@ -24,12 +24,7 @@ export default async function handler(
         bookings: true,
         waitingLists: true,
         seatings: true,
-        // bookings: {
-        //   include: {
-        //     seating: true,
-        //     luggages: true,
-        //   },
-        // },
+        user: true,
       },
     });
 
